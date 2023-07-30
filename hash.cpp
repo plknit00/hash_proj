@@ -5,24 +5,44 @@
 #include <string>
 using namespace std;
 
-// Constructor
-
-// CHECK THAT NUM_BUCKETS IS NOT A DUMB NUMBER
-
+// CONSTRUCTOR
+// ******** check num_buckets is a reasonable starting number *********
 Hash::Hash(uint64_t num_buckets) : num_buckets(num_buckets), num_elts(0) {
   // hash table points to a list of bucket pointers
   // () initializes everything as nullptrs
   hash_table = new Bucket[num_buckets]();
 }
 
+// DESTRUCTOR
+Hash::~Hash() {
+  for (int i = 0; i < num_buckets; i++) {
+    Entry* Ptr = hash_table[i].first;
+    if (Ptr != nullptr) {
+      while (Ptr != nullptr) {
+        Entry* temp_ptr = Ptr;
+        Ptr = temp_ptr->next;
+        delete temp_ptr;
+      }
+    }
+  }
+  delete[] hash_table;
+}
+
+// EMPTY
+bool empty();
+// ************ to do ****************
+
+// RETURNS THE NUMBER OF BUCKETS
 uint64_t Hash::get_num_buckets() const {
   return num_buckets;
 }
 
+// RETURNS THE NUMBER OF BUCKETS
 uint64_t Hash::get_num_elts() const {
   return num_elts;
 }
 
+// HASH FUNCTION
 // hashes values to put into appropriate bucket
 uint64_t Hash::hash(string key) {
   // for non-string, use std::hash()
@@ -33,9 +53,10 @@ uint64_t Hash::hash(string key) {
   }
   uint64_t index = hash_val % num_buckets;
   return index;
-  // MAKE BETTER LATER
+  // ************* use better hash function ***************
 }
 
+// PRINTS TABLE
 // prints the hash table and the first value in each bucket
 void Hash::get_tab() {
   for (int i = 0; i < num_buckets; i++) {
@@ -52,21 +73,24 @@ void Hash::get_tab() {
   }
 }
 
+// helper to resize and insert
 void Hash::insert_in_bucket(Bucket* b, Entry* new_elt) {
   new_elt->next = b->first;
   b->first = new_elt;
   b->length += 1;
 }
 
+// helper to resize
 bool Hash::resize_check(const Bucket* curr_bucket) const {
   float curr_thresh = static_cast<float>(num_elts) / num_buckets;
-  // cout << curr_thresh << "   " << curr_bucket->length << endl;
   return (curr_thresh >= saturation_threshold &&
           curr_bucket->length >= bucket_length_threshold);
 }
 
+// RESIZE
 void Hash::resize() {
-  // to be more optimal, use prime list from abseil flat hash map
+  // ************* to be more optimal, use prime list from abseil flat hash map
+  // ***********
   cout << num_buckets << endl;
   uint64_t num_buckets_old = num_buckets;
   num_buckets = 2 * num_buckets - 1;
@@ -84,6 +108,7 @@ void Hash::resize() {
   delete[] old_hash;
 }
 
+// INSERT
 // inserts new key value pair into table
 void Hash::insert(string first, string last) {
   int index = hash(first);
@@ -98,6 +123,7 @@ void Hash::insert(string first, string last) {
   }
 }
 
+// GET
 // enter key and value is returned
 string Hash::get(string key) {
   int index = hash(key);
@@ -110,6 +136,10 @@ string Hash::get(string key) {
       return Ptr->l_name;
     }
   }
-  // make better later
+  // ************ make better later by overloading [] operator **********
   return "";
+
+  // ERASE
+  void erase();
+  // ************ to do ****************
 }

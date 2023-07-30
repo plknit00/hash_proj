@@ -3,9 +3,10 @@
 #include <string>
 using namespace std;
 
-class Hash {  // The class
+class Hash {
  private:
   // number of buckets in hash table
+  // can be a very large amount, so we don't limit to just integers
   uint64_t num_buckets;
   uint64_t num_elts;
   static const float saturation_threshold = 0.7;
@@ -25,30 +26,42 @@ class Hash {  // The class
   Bucket* hash_table;
 
  public:
-  // constructor
+  // CONSTRUCTOR
   Hash(uint64_t num_buckets = 13);
 
   // DESTRUCTOR
+  ~Hash();
 
-  // empty
+  // EMPTY
+  bool empty();
 
+  // RETURNS THE NUMBER OF BUCKETS
   uint64_t get_num_buckets() const;
+
+  // RETURNS THE NUMBER OF ELEMENTS
   uint64_t get_num_elts() const;
 
-  // hash function
+  // HASH FUNCTION
   uint64_t hash(string key);
 
+  // PRINTS TABLE
   void get_tab();
 
+  // helper to resize and insert
   void insert_in_bucket(Bucket* b, Entry* new_elt);
 
+  // helper to resize
   bool resize_check(const Bucket* curr_bucket) const;
+
+  // RESIZE
   void resize();
 
-  // these all need to be const time(below)
-  // insert
+  // INSERT
   void insert(string first, string last);
-  // get
+
+  // GET
   string get(string key);
-  // erase
+
+  // ERASE
+  void erase();
 };

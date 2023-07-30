@@ -28,4 +28,5 @@ int main() {
   //     h["Remy"];
   //   cout << "Remy " << h.get("empty") << endl;
   return 0;
+  // destructor gets called after return automatically
 }
